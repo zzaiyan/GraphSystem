@@ -153,7 +153,7 @@ public:
   }
 
   void printTable() {
-    qDebug() << "start print out table.";
+    qDebug() << "Out Table.";
     for (int i = 0; i < vers.size(); i++) {
       QString buf;
       buf += (QString::number(vers[i]->_data) + ": ");
@@ -161,7 +161,7 @@ public:
       buf += getList(line);
       qDebug() << buf;
     }
-    qDebug() << "start print in table.";
+    qDebug() << "In Table.";
     for (int i = 0; i < vers.size(); i++) {
       QString buf;
       buf += (QString::number(vers[i]->_data) + ": ");
