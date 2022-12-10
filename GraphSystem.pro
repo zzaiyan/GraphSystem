@@ -11,13 +11,11 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     home.cpp \
-    net.cpp \
-    netnode.cpp
+    net.cpp
 
 HEADERS += \
     home.h \
-    net.h \
-    netnode.h
+    net.h
 
 FORMS += \
     home.ui
