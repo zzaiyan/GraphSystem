@@ -1,21 +1,26 @@
 #ifndef HOME_H
 #define HOME_H
 
+#include "net.h"
+#include <QDebug>
+#include <QString>
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class Home; }
+namespace Ui {
+class Home;
+}
 QT_END_NAMESPACE
 
-class Home : public QWidget
-{
+class Home : public QWidget {
   Q_OBJECT
 
- public:
+public:
   Home(QWidget *parent = nullptr);
   ~Home();
 
- private:
+private:
+  ALNet<QString, QString> net;
   Ui::Home *ui;
 };
 #endif // HOME_H

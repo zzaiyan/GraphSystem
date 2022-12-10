@@ -9,21 +9,15 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    DS/DbLinkedList.cpp \
-    DS/Queue.cpp \
-    DS/WUSGraph.cpp \
-    DS/heap.cpp \
     main.cpp \
-    home.cpp
+    home.cpp \
+    net.cpp \
+    netnode.cpp
 
 HEADERS += \
-    DS/DbLinkedList.h \
-    DS/MyHashMap.h \
-    DS/MyHashTable.h \
-    DS/Queue.h \
-    DS/WUSGraph.h \
-    DS/heap.h \
-    home.h
+    home.h \
+    net.h \
+    netnode.h
 
 FORMS += \
     home.ui
@@ -32,6 +26,3 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-DISTFILES += \
-    DS/README.md
