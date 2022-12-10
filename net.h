@@ -1,9 +1,6 @@
 #ifndef NET_H
 #define NET_H
 
-//#define DefaultSize 20
-#define TT template <class VerData, class ArcData>
-
 #include <QDebug>
 #include <QString>
 #include <list>
@@ -11,49 +8,47 @@
 #include <queue>
 #include <stack>
 #include <vector>
+
 using std::list;
 using std::map;
 using std::queue;
 using std::stack;
 using std::vector;
 
-template <class VerData, class ArcData>
-class ALNet {
- public:
+template <class VerData, class ArcData> class ALNet {
+public:
   struct ArcNode;
-  struct VerNode {  // 顶点
+  struct VerNode { // 顶点
     int id;
     VerData _data;
     list<ArcNode> _Adj, _rAdj;
     VerNode(int i = -1) : id(i) {}
-    VerNode(int i, const VerData& e) : id(i), _data(e) {}
+    VerNode(int i, const VerData &e) : id(i), _data(e) {}
   };
-  struct ArcNode {  // 有向边
-    VerNode* from = nullptr;
-    VerNode* to = nullptr;
+  struct ArcNode { // 有向边
+    VerNode *from = nullptr;
+    VerNode *to = nullptr;
     ArcData _data;
   };
 
- private:
-  //  int verNum;
-  vector<VerNode*> vers;  // 顶点数组
-  //  vector<list<ArcNode>> Adj, rAdj;  // 顶点对应的邻接表
+private:
+  vector<VerNode *> vers; // 顶点数组
 
-  int fromNum(const ArcNode& a) { return a.from->id; }
-  int toNum(const ArcNode& a) { return a.to->id; }
-  list<ArcNode>& Adj(int id) { return vers[id]->_Adj; }
-  list<ArcNode>& rAdj(int id) { return vers[id]->_rAdj; }
+  int fromNum(const ArcNode &a) { return a.from->id; }    // 获取起点下标
+  int toNum(const ArcNode &a) { return a.to->id; }        // 获取终点下标
+  list<ArcNode> &Adj(int id) { return vers[id]->_Adj; }   // 获取邻接表
+  list<ArcNode> &rAdj(int id) { return vers[id]->_rAdj; } // 获取逆邻接表
 
- public:
+public:
   ALNet(const int s = 0) {
-    for (int i = 0; i < s; i++)  // initialize
+    for (int i = 0; i < s; i++) // initialize
       vers.push_back(new VerNode{i, {}});
   }
   // 获取下标对应的顶点指针
-  VerNode* getVer(int id) { return vers[id]; }
+  VerNode *getVer(int id) { return vers[id]; }
   // 获取顶点序偶对应的边指针
-  ArcNode* getArc(int a, int b) {
-    ArcNode* arc = nullptr;
+  ArcNode *getArc(int a, int b) {
+    ArcNode *arc = nullptr;
     for (auto it = Adj(a).begin(); it != Adj(a).end(); it++)
       if (it->to->id == b) {
         arc = &(*it);
@@ -67,11 +62,11 @@ class ALNet {
   int outDegree(int id) const { return Adj(id).size(); }
 
   // 尾插顶点并赋值
-  void addVer(const VerData& e) { vers.push_back(new VerNode{vers.size(), e}); }
+  void addVer(const VerData &e) { vers.push_back(new VerNode{vers.size(), e}); }
   // 尾插顶点
   void addVer() { addVer({}); }
   // 加边
-  void addArc(int a, int b, const ArcData& e) {
+  void addArc(int a, int b, const ArcData &e) {
     Adj(a).push_back({getVer(a), getVer(b), e});
     rAdj(b).push_back({getVer(b), getVer(a), e});
   }
@@ -80,7 +75,7 @@ class ALNet {
   // 判断边
   bool haveArc(int a, int b) { return getArc(a, b) != nullptr; }
   // 改变顶点的数据
-  bool setVer(int id, const VerData& e) {
+  bool setVer(int id, const VerData &e) {
     auto ver = getVer(id);
     if (ver == nullptr)
       return false;
@@ -88,7 +83,7 @@ class ALNet {
     return true;
   }
   // 改变边的数据
-  bool setArc(int a, int b, const ArcData& e) {
+  bool setArc(int a, int b, const ArcData &e) {
     auto arc = getArc(a, b);
     //    auto str = arc->_data;
     if (arc == nullptr)
@@ -120,7 +115,7 @@ class ALNet {
       if (i == id)
         continue;
       queue<std::pair<int, int>> que;
-      for (auto& e : Adj(i)) {
+      for (auto &e : Adj(i)) {
         int a = fromNum(e), b = toNum(e);
         if (a == id || b == id)
           que.push({a, b});
@@ -133,10 +128,10 @@ class ALNet {
         que.pop();
       }
     }
-    //    delete vers[id];
-    //    for (int i = id + 1; i < vers.size(); i++)
-    //      vers[i - 1] = vers[i];
-    //    vers.pop_back();
+    delete vers[id];
+    for (int i = id + 1; i < vers.size(); i++)
+      vers[i - 1] = vers[i];
+    vers.pop_back();
   }
 
   void printVers() {
@@ -147,7 +142,7 @@ class ALNet {
     qDebug() << buf;
   }
 
-  QString getList(const list<ArcNode>& li) {
+  QString getList(const list<ArcNode> &li) {
     QString buf;
     for (auto it = li.begin(); it != li.end(); it++) {
       if (it != li.begin())
@@ -177,5 +172,4 @@ class ALNet {
   }
 };
 
-#undef TT
-#endif  // NET_H
+#endif // NET_H
