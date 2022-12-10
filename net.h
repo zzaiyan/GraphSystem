@@ -4,6 +4,7 @@
 #define DefaultSize 20
 #define TT template <class VerData, class ArcData>
 
+#include <QDebug>
 #include <QString>
 #include <list>
 #include <map>
@@ -39,7 +40,7 @@ public:
   // 获取顶点序偶对应的边指针
   ArcNode *getArc(int a, int b) {
     ArcNode *arc = nullptr;
-    for (auto &&it : outAdj[a])
+    for (auto it : outAdj[a])
       if (it.to->id == b) {
         arc = &it;
         break;
@@ -74,6 +75,7 @@ public:
   // 改变边的数据
   bool setArc(int a, int b, const ArcData &e) {
     auto arc = getArc(a, b);
+    qDebug() << "Origin ArcData = " << arc->_data;
     if (arc == nullptr)
       return false;
     arc->_data = e;
@@ -84,7 +86,11 @@ public:
     auto arc = getArc(a, b);
     if (arc == nullptr)
       return ArcData{};
-    auto ret = arc->_data;
+    auto tmp = arc->_data;
+    auto &L = outAdj[a];
+    L.clear();
+    //    delete arc;
+    return tmp;
   }
 };
 
