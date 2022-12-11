@@ -2,7 +2,9 @@
 #define NET_H
 
 #include <QDebug>
+#include <QList>
 #include <QString>
+#include <QVector>
 #include <list>
 #include <map>
 #include <queue>
@@ -19,11 +21,11 @@ template <class VerData, class ArcData> class ALNet {
 public:
   struct ArcNode;
   struct VerNode { // 顶点
-    int id;
+    int _id;
     VerData _data;
-    list<ArcNode> _Adj, _rAdj;
-    VerNode(int i = -1) : id(i) {}
-    VerNode(int i, const VerData &e) : id(i), _data(e) {}
+    QList<ArcNode> _Adj, _rAdj;
+    VerNode(int i = -1) : _id(i) {}
+    VerNode(int i, const VerData &e) : _id(i), _data(e) {}
   };
   struct ArcNode { // 有向边
     VerNode *from = nullptr;
@@ -32,12 +34,14 @@ public:
   };
 
 private:
-  vector<VerNode *> vers; // 顶点数组
+  QVector<VerNode *> vers; // 顶点数组
 
-  int fromNum(const ArcNode &a) { return a.from->id; }    // 获取起点下标
-  int toNum(const ArcNode &a) { return a.to->id; }        // 获取终点下标
-  list<ArcNode> &Adj(int id) { return vers[id]->_Adj; }   // 获取邻接表
-  list<ArcNode> &rAdj(int id) { return vers[id]->_rAdj; } // 获取逆邻接表
+  int fromNum(const ArcNode &a) { return a.from->_id; } // 获取起点下标
+  int toNum(const ArcNode &a) { return a.to->_id; }     // 获取终点下标
+
+public:
+  QList<ArcNode> &Adj(int id) { return vers[id]->_Adj; }   // 获取邻接表
+  QList<ArcNode> &rAdj(int id) { return vers[id]->_rAdj; } // 获取逆邻接表
 
 public:
   ALNet(const int s = 0) {
@@ -97,12 +101,12 @@ public:
     auto it1 = Adj(a).begin();
     auto it2 = rAdj(b).begin();
     for (; it1 != Adj(a).end(); it1++)
-      if (it1->to->id == b) {
+      if (it1->to->_id == b) {
         ret = it1->_data;
         break;
       }
     for (; it2 != rAdj(b).end(); it2++)
-      if (it2->to->id == a)
+      if (it2->to->_id == a)
         break;
     ret = it1->_data;
     Adj(a).erase(it1);
@@ -128,43 +132,46 @@ public:
         que.pop();
       }
     }
+    auto ret = vers[id]->_data;
     delete vers[id];
-    for (int i = id + 1; i < vers.size(); i++)
+    for (int i = id + 1; i < vers.size(); i++) {
+      vers[i]->_id--;
       vers[i - 1] = vers[i];
+    }
     vers.pop_back();
+    return ret;
   }
 
   void printVers() {
-    QString buf;
     for (int i = 0; i < vers.size(); i++) {
-      buf += (QString::number(vers[i]->_data) + " ");
+      vers[i]->_data.print();
     }
-    qDebug() << buf;
   }
 
-  QString getList(const list<ArcNode> &li) {
+  QString getList(const QList<ArcNode> &li) {
     QString buf;
     for (auto it = li.begin(); it != li.end(); it++) {
       if (it != li.begin())
         buf += " -> ";
-      buf += QString::number(it->_data);
+      buf += it->_data.label;
     }
     return buf;
   }
 
   void printTable() {
-    qDebug() << "Out Table.";
+    qDebug() << "Out Table:";
     for (int i = 0; i < vers.size(); i++) {
       QString buf;
-      buf += (QString::number(vers[i]->_data) + ": ");
+      buf += (vers[i]->_data.name + ": ");
       auto line = Adj(i);
       buf += getList(line);
       qDebug() << buf;
     }
-    qDebug() << "In Table.";
+    qDebug() << ""
+             << "In Table:";
     for (int i = 0; i < vers.size(); i++) {
       QString buf;
-      buf += (QString::number(vers[i]->_data) + ": ");
+      buf += (vers[i]->_data.name + ": ");
       auto line = rAdj(i);
       buf += getList(line);
       qDebug() << buf;

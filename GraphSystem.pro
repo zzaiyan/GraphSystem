@@ -15,7 +15,8 @@ SOURCES += \
 
 HEADERS += \
     home.h \
-    net.h
+    net.h \
+    node.h
 
 FORMS += \
     home.ui

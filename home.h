@@ -2,10 +2,12 @@
 #define HOME_H
 
 #include "net.h"
+#include "node.h"
 #include <QHash>
 #include <QString>
 #include <QVector>
 #include <QWidget>
+#include <cstring>
 #include <fstream>
 #include <string>
 
@@ -27,8 +29,12 @@ protected:
 
 private:
   Ui::Home *ui;
-  ALNet<int, int> net; // 有向网
-  QHash<QString, int> hsId;
-  QVector<QString> id2str;
+
+  ALNet<RoleData, RelData> net; // 有向网
+
+  QHash<QString, ALNet<RoleData, RelData>::VerNode *> hashs;
+  QVector<QString> names;
+
+  int getId(const QString &s) { return hashs[s]->_id; }
 };
 #endif // HOME_H
